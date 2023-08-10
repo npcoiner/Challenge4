@@ -81,6 +81,9 @@ function startGame() {
 
 function resetGame() {
     reset = true;
+    win = false;
+    lose = false;
+    questionNumber = -1;
     startButton.disabled = false;
     resetButton.disabled = true;
     questionSection.hidden = true; 
@@ -90,7 +93,7 @@ function resetGame() {
 function loseGame() {
     timerCount = 60;
     timerEleValue.textContent = timerCount;
-    lose = false;
+    lose = true;
     win = false;
     questionSection.hidden = true; 
     buttonSection.hidden = true; 
@@ -102,34 +105,43 @@ function loseGame() {
 function winGame(){
     timerCount = 60;
     timerEleValue.textContent = timerCount;
-    questionSection.hidden = true; 
+    questionSection.text = "Add"; 
     buttonSection.hidden = true; 
     lose = false;
-    win = false;
-    totalwins++;
+    win = true;
+    totalWins++;
     //change display element to show the reset button or something...
 };
 
-function isCorrect(x){
-    if (questionNumber + 1 == questions.length){
-        console.log("win")
-        winGame();
-    }
-    else {
-        if (x == questions[questionNumber].answer){
+function isCorrect(x, e){
+    e.preventDefault();
+    console.log("selected " + x )
+    console.log(questionNumber);
+    console.log(questions[questionNumber].answer);
+
+    if (x == questions[questionNumber].answer - 1){
+        
+
+        if (questionNumber + 1 == questions.length){    
+            console.log("win")
+            winGame();
+        }else{
             displayQuestion();
             console.log("next")
         }
-        else{
-            console.log("lose")
-            loseGame();
-        }
+        
     }
+    else{
+        console.log("lose")
+        loseGame();
+    }
+    
 };
 //start the game when pressing a button that says start.
 startButton.addEventListener("click",startGame);
 resetButton.addEventListener("click",resetGame);
-button1.addEventListener("click",isCorrect(0));
-button2.addEventListener("click",isCorrect(1));
-button3.addEventListener("click",isCorrect(2));
-button4.addEventListener("click",isCorrect(3));
+button1.addEventListener("click",(e) => isCorrect(0,e));
+button2.addEventListener("click",(e) => isCorrect(1,e));
+button3.addEventListener("click",(e) => isCorrect(2,e));
+button4.addEventListener("click",(e) => isCorrect(3,e));
+
