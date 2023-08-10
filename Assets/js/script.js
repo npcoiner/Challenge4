@@ -18,15 +18,16 @@ var lose = false;
 var reset = false;
 var totalWins = 0;
 var totalLoses = 0;
+var questionNumber = -1;
 
 //Questions Section:
 var questions = [
-    question1 = {
+    {
         text: "What color is the sky?",
         entries: ["red","orange","blue","green"],
         answer: 3
-    }
-]
+    },
+];
 
 
 
@@ -55,46 +56,80 @@ function startTimer() {
         //modify some sort of display element to show the new timer value
         timerEleValue.textContent = timerCount;
     }, 1000);
-}
+};
 
-function dispalyQuestion(){
+function displayQuestion(){
     questionSection.removeAttribute("hidden");
-
-}
+    buttonSection.removeAttribute("hidden");
+    questionNumber++;
+    questionSection.textContent = questions[questionNumber].text;
+    button1.textContent = questions[questionNumber].entries[0];
+    button2.textContent = questions[questionNumber].entries[1];
+    button3.textContent = questions[questionNumber].entries[2];
+    button4.textContent = questions[questionNumber].entries[3];
+};
 
 function startGame() {
     displayQuestion();
     reset = false;
     startButton.disabled = true;
     resetButton.disabled = false;
+    questionSection.hidden = false; 
+    buttonSection.hidden = false; 
     startTimer();
-}
+};
 
 function resetGame() {
     reset = true;
     startButton.disabled = false;
     resetButton.disabled = true;
+    questionSection.hidden = true; 
+    buttonSection.hidden = true; 
 
-}
+};
 function loseGame() {
     timerCount = 60;
     timerEleValue.textContent = timerCount;
     lose = false;
     win = false;
+    questionSection.hidden = true; 
+    buttonSection.hidden = true; 
     totalLoses++;
     //change display element to show the reset button or something...
-}
+};
 
 
 function winGame(){
     timerCount = 60;
     timerEleValue.textContent = timerCount;
+    questionSection.hidden = true; 
+    buttonSection.hidden = true; 
     lose = false;
     win = false;
     totalwins++;
     //change display element to show the reset button or something...
-}
+};
 
+function isCorrect(x){
+    if (questionNumber + 1 == questions.length){
+        console.log("win")
+        winGame();
+    }
+    else {
+        if (x == questions[questionNumber].answer){
+            displayQuestion();
+            console.log("next")
+        }
+        else{
+            console.log("lose")
+            loseGame();
+        }
+    }
+};
 //start the game when pressing a button that says start.
 startButton.addEventListener("click",startGame);
 resetButton.addEventListener("click",resetGame);
+button1.addEventListener("click",isCorrect(0));
+button2.addEventListener("click",isCorrect(1));
+button3.addEventListener("click",isCorrect(2));
+button4.addEventListener("click",isCorrect(3));
