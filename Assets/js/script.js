@@ -115,25 +115,18 @@ function winGame(){
 
 function isCorrect(x, e){
     e.preventDefault();
-    console.log("selected " + x )
-    console.log(questionNumber);
-    console.log(questions[questionNumber].answer);
-
     if (x == questions[questionNumber].answer - 1){
         
 
         if (questionNumber + 1 == questions.length){    
-            console.log("win")
             winGame();
         }else{
             displayQuestion();
-            console.log("next")
         }
         
     }
     else{
-        console.log("lose")
-        loseGame();
+        timerCount -= 10;
     }
     
 };
