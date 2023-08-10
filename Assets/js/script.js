@@ -17,8 +17,8 @@ var totalLoses = 0;
 function startTimer() { 
     timer = setInterval(function() {
         timerCount--;
-        //modify some sort of display element to show the new timer value
         timerEleValue.textContent = timerCount;
+        
         //on lose
         if (timerCount <= 0){
             lose = true;
@@ -26,13 +26,17 @@ function startTimer() {
             // for the user to press to restart the game 
             clearInterval(timer);
             timerCount = 60;
+            timerEleValue.textContent = timerCount;
             loseGame(); 
             
         }
         if ( win || lose || reset){
             clearInterval(timer);
             timerCount = 60;
+            timerEleValue.textContent = timerCount;
         }
+        //modify some sort of display element to show the new timer value
+        timerEleValue.textContent = timerCount;
     }, 1000);
 }
 
@@ -51,6 +55,7 @@ function resetGame() {
 }
 function loseGame() {
     timerCount = 60;
+    timerEleValue.textContent = timerCount;
     lose = false;
     win = false;
     totalLoses++;
@@ -60,6 +65,7 @@ function loseGame() {
 
 function winGame(){
     timerCount = 60;
+    timerEleValue.textContent = timerCount;
     lose = false;
     win = false;
     totalwins++;
