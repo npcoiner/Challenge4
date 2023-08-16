@@ -20,6 +20,11 @@ var win = false;
 var reset = false;
 var totalWins = 0;
 var questionNumber = -1;
+var score = 0;
+var currentHighscore = [{
+    'initials' : "NC",
+    'score' : 2,
+}];
 
 //Questions Section:
 var questions = [
@@ -29,7 +34,7 @@ var questions = [
         answer: 3
     },
     {
-        text: "What color is my ass?",
+        text: "What color is the sky?",
         entries: ["red","orange","blue","green"],
         answer: 3
     },
@@ -76,8 +81,8 @@ function displayQuestion(){
 };
 
 
-function saveScore(scores) {
-    localStorage.setItem("highScore", JSON.stringify(scores));
+function saveScore(scoreEntry) {
+    localStorage.setItem("highScore", JSON.stringify(scoreEntry));
 }
 
 function displayHighscore(){
@@ -85,24 +90,25 @@ function displayHighscore(){
     displayHighscoreEle.empty();
     if (storedScore){
         storedScore = JSON.parse(storedScore);
-        displayHighscoreEle.disabled = false;
-        displayHighscoreEle.textContent = storedScore;
+        displayHighscoreEle.show();
     } else{
         storedScore = [];
-        displayHighscoreEle.disabled = true;
     }
     
-    for (var i = 0; i < storedScore.length; i++){
-        var rowEle = $('<tr>');
-        var nameEle = $('<td>').text(storedScore.name);
-        var scoreEle = $('<td>').text(storedScore.score);
-        rowEle.append(nameEle, scoreEle);
+    currentHighscore = storedScore;
+    for (var i = 0; i < currentHighscore.length; i++){
+        console.log(currentHighscore[i]);
+        var rowEle = $('<div>');
+        var nameEle = $('<div>').text(currentHighscore[i].initials + " " + currentHighscore[i].score);
+        rowEle.append(nameEle);
         displayHighscoreEle.append(rowEle);
-
     }
 }
 function startGame() {
+    console.log("starting")
+    displayHighscore()
     timerCount = 60;
+    score = 0;
     questionNumber = -1;
     displayQuestion();
     form.hidden = true;
@@ -115,7 +121,10 @@ function startGame() {
     startTimer();
 };
 function resetGame() {
+    console.log("ressetting");
+    displayHighscore()
     questionNumber = -1;
+    score = 0;
     reset = true;
     startTimer();
     startButton.disabled = false;
@@ -123,12 +132,9 @@ function resetGame() {
     questionSection.hidden = true; 
     buttonSection.hidden = true; 
 }
-function recordScore(){
-    questionSection.text = "Add"; 
-}
-
 
 function endGame(){
+    displayHighscore()
     timerCount = 60;
     timerEleValue.textContent = timerCount;
     questionSection.textContent = "Record Score?"; 
@@ -137,13 +143,12 @@ function endGame(){
     buttonSection.hidden = true; 
     win = true;
     totalWins++;
-    recordScore();
 };
 
 function isCorrect(x, e){
     e.preventDefault();
     if (x == questions[questionNumber].answer - 1){
-        
+        score++;
 
         if (questionNumber + 1 == questions.length){    
             endGame();
@@ -166,7 +171,19 @@ button3.addEventListener("click",(e) => isCorrect(2,e));
 button4.addEventListener("click",(e) => isCorrect(3,e));
 
 form.addEventListener("submit", (e) => {
+    console.log("HELLO???")
+    console.log(currentHighscore);
     e.preventDefault;
-    let name = document.getElementById("name");
-    form.submit();
+    let initials = document.getElementById("initials").value;
+    console.log(initials)
+    let scoreEntry = {
+        'initials': initials,
+        'score': score
+    }
+    console.log(scoreEntry)
+    currentHighscore.push(scoreEntry);
+    console.log(currentHighscore);
+    saveScore(currentHighscore);
+    displayHighscore();
 });
+displayHighscore();
