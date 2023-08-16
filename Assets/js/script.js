@@ -7,6 +7,7 @@ var button2 = document.querySelector(".button-2");
 var button3 = document.querySelector(".button-3");
 var button4 = document.querySelector(".button-4");
 var buttonSection = document.querySelector(".button-section");
+var displayHighscore = $('#high-score-section');
 
 resetButton.disabled = true;
 
@@ -14,16 +15,19 @@ resetButton.disabled = true;
 var timerCount = 60;
 //initialize win and lose to false and totals to zero
 var win = false;
-var lose = false;
 var reset = false;
 var totalWins = 0;
-var totalLoses = 0;
 var questionNumber = -1;
 
 //Questions Section:
 var questions = [
     {
         text: "What color is the sky?",
+        entries: ["red","orange","blue","green"],
+        answer: 3
+    },
+    {
+        text: "What color is my ass?",
         entries: ["red","orange","blue","green"],
         answer: 3
     },
@@ -39,13 +43,13 @@ function startTimer() {
         
         //on lose
         if (timerCount <= 0){
-            lose = true;
+            win = true;
             // call loseGame which resets the timerCount and creates a reset button
             // for the user to press to restart the game 
             clearInterval(timer);
             timerCount = 60;
             timerEleValue.textContent = timerCount;
-            loseGame(); 
+            endGame(); 
             
         }
         if ( win || lose || reset){
@@ -69,8 +73,32 @@ function displayQuestion(){
     button4.textContent = questions[questionNumber].entries[3];
 };
 
+
+function saveScore(scores) {
+    localStorage.setItem("highScore", JSON.stringify(scores));
+}
+
 function startGame() {
-    displayQuestion();
+    var storedScore = localStorage.getItem("highScore");
+    displayHighscore.empty();
+    if (storedScore === null){
+        storedScore = JSON.parse(storedScore);
+        displayHighscore.disabled = false;
+        displayHighscore.textContent = storedScore;
+    } else{
+        storedScore = [];
+        displayHighscore.disabled = true;
+    }
+    
+    for (var i = 0; i < storedScore.length; i++){
+        var rowEle = $('<tr>');
+        var nameEle = $('<td>').text(storedScore.name);
+        var scoreEle = $('<td>').text(storedScore.score);
+        rowEle.append(nameEle, scoreEle);
+        displayHighscore.append(rowEle);
+
+    }
+
     reset = false;
     startButton.disabled = true;
     resetButton.disabled = false;
@@ -90,26 +118,21 @@ function resetGame() {
     buttonSection.hidden = true; 
 
 };
-function loseGame() {
-    timerCount = 60;
-    timerEleValue.textContent = timerCount;
-    lose = true;
-    win = false;
-    questionSection.hidden = true; 
-    buttonSection.hidden = true; 
-    totalLoses++;
-    //change display element to show the reset button or something...
-};
-
-
-function winGame(){
-    timerCount = 60;
-    timerEleValue.textContent = timerCount;
+function recordScore(){
     questionSection.text = "Add"; 
+}
+
+
+function endGame(){
+    timerCount = 60;
+    timerEleValue.textContent = timerCount;
+    questionSection.textContent = "Record Score?"; 
+
     buttonSection.hidden = true; 
     lose = false;
     win = true;
     totalWins++;
+    recordScore();
     //change display element to show the reset button or something...
 };
 
@@ -119,7 +142,7 @@ function isCorrect(x, e){
         
 
         if (questionNumber + 1 == questions.length){    
-            winGame();
+            endGame();
         }else{
             displayQuestion();
         }
