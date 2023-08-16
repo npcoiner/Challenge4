@@ -7,7 +7,9 @@ var button2 = document.querySelector(".button-2");
 var button3 = document.querySelector(".button-3");
 var button4 = document.querySelector(".button-4");
 var buttonSection = document.querySelector(".button-section");
-var displayHighscore = $('#high-score-section');
+var displayHighscoreEle = $('#high-score-section');
+var form = document.getElementById("form-id");
+
 
 resetButton.disabled = true;
 
@@ -52,7 +54,7 @@ function startTimer() {
             endGame(); 
             
         }
-        if ( win || lose || reset){
+        if ( win || reset){
             clearInterval(timer);
             timerCount = 60;
             timerEleValue.textContent = timerCount;
@@ -78,16 +80,16 @@ function saveScore(scores) {
     localStorage.setItem("highScore", JSON.stringify(scores));
 }
 
-function startGame() {
+function displayHighscore(){
     var storedScore = localStorage.getItem("highScore");
-    displayHighscore.empty();
-    if (storedScore === null){
+    displayHighscoreEle.empty();
+    if (storedScore){
         storedScore = JSON.parse(storedScore);
-        displayHighscore.disabled = false;
-        displayHighscore.textContent = storedScore;
+        displayHighscoreEle.disabled = false;
+        displayHighscoreEle.textContent = storedScore;
     } else{
         storedScore = [];
-        displayHighscore.disabled = true;
+        displayHighscoreEle.disabled = true;
     }
     
     for (var i = 0; i < storedScore.length; i++){
@@ -95,9 +97,15 @@ function startGame() {
         var nameEle = $('<td>').text(storedScore.name);
         var scoreEle = $('<td>').text(storedScore.score);
         rowEle.append(nameEle, scoreEle);
-        displayHighscore.append(rowEle);
+        displayHighscoreEle.append(rowEle);
 
     }
+}
+function startGame() {
+    timerCount = 60;
+    questionNumber = -1;
+    displayQuestion();
+    form.hidden = true;
 
     reset = false;
     startButton.disabled = true;
@@ -106,18 +114,15 @@ function startGame() {
     buttonSection.hidden = false; 
     startTimer();
 };
-
 function resetGame() {
-    reset = true;
-    win = false;
-    lose = false;
     questionNumber = -1;
+    reset = true;
+    startTimer();
     startButton.disabled = false;
     resetButton.disabled = true;
     questionSection.hidden = true; 
     buttonSection.hidden = true; 
-
-};
+}
 function recordScore(){
     questionSection.text = "Add"; 
 }
@@ -127,13 +132,12 @@ function endGame(){
     timerCount = 60;
     timerEleValue.textContent = timerCount;
     questionSection.textContent = "Record Score?"; 
+    form.hidden = false;
 
     buttonSection.hidden = true; 
-    lose = false;
     win = true;
     totalWins++;
     recordScore();
-    //change display element to show the reset button or something...
 };
 
 function isCorrect(x, e){
@@ -161,3 +165,8 @@ button2.addEventListener("click",(e) => isCorrect(1,e));
 button3.addEventListener("click",(e) => isCorrect(2,e));
 button4.addEventListener("click",(e) => isCorrect(3,e));
 
+form.addEventListener("submit", (e) => {
+    e.preventDefault;
+    let name = document.getElementById("name");
+    form.submit();
+});
