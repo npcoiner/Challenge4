@@ -1,8 +1,6 @@
 # Code Quiz
 
-## Code Quiz
-
-An interactive Javascript coding quiz built with a high score system and more!
+An interactive Javascript coding quiz built with a high-score system and more!
 
 Deployed: https://npcoiner.github.io/Challenge4/
 
