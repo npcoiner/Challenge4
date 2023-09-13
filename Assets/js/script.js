@@ -464,6 +464,8 @@ function displayHighscore(){
     }
 }
 function startGame() {
+    window.clearInterval()
+    window.clearTimeout()
     console.log("starting")
     displayHighscore()
     timerCount = 60;
@@ -485,7 +487,7 @@ function resetGame() {
     questionNumber = -1;
     score = 0;
     reset = true;
-    startTimer();
+    window.clearInterval()
     startButton.disabled = false;
     resetButton.disabled = true;
     questionSection.hidden = true; 
